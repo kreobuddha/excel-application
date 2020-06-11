@@ -18,13 +18,21 @@ export class DomListener {
             `Method ${method} is not implemented in ${this.name} Component`
         )
       }
-
+      // Привязываем функцию обработчик событий к контексту
+      this[method] = this[method].bind(this)
       // То же что и addEventListener
-      this.$root.on(listener, this[method].bind(this))
+      this.$root.on(listener, this[method])
     })
   }
-  removeDOMListeners() {
 
+  removeDOMListeners() {
+    this.listeners.forEach(listener => {
+      const method = getMethodName(listener)
+
+      // То же что и removeEventListener
+      this.$root.off(listener, this[method])
+      console.log(`${listener} in ${method} method is off`)
+    })
   }
 }
 
